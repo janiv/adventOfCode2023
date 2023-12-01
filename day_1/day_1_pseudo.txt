@@ -1,0 +1,135 @@
+Part 1 is asking us to find the first digit from the left and the right in a
+one line string.
+
+In cases where there is only a single number that number will be first from the
+left and right so the number will be xx.
+Example
+treb7uchet = left 7, right 7 result 77.
+
+Initial Thoughts on how to solve:
+Create a left and right pointer. When a pointer finds a number it stops.
+Once both numbers are found we concatenate the strings to create our digit.
+Then we add that digit to the total.
+
+I ended up using the python isdigit() function on the list and reversed list
+to solve part 1.
+
+
+
+Part 2:
+Part 2 makes it so that both the word "one" and 1 are valid numbers.
+My initial gut feeling is we make a regex search pattern that contains
+all the words "one-nine" and [0-9]. Then search string from left and right.
+We cannot use the reverse function because it will turn
+"onetwothree" into "eerhtowteno", so our regex needs to find first and last
+going left to right.
+
+For the regex pattern lets use:
+r"(one|two|three|four|five|six|seven|eight|nine|ten|[0-9])"
+The findall will return all matches. We take the first and last.
+
+I ran into a problem with my initial code that I will post below:
+
+def day_1_part2(filename: str) -> int:
+    result = 0
+
+    try:
+        file = open(filename, "r")
+    except IOError:
+        print("No such file found!")
+    patt = r'(one|two|three|four|five|six|seven|eight|nine|zero|[0-9])'
+    lines = file.readlines()
+
+    for item in lines:
+        left, right = "", ""
+        nums = re.findall(pattern=patt, string=item)
+        left = nums[0]
+        right = nums[-1]
+        if not left.isdigit():
+            left = STR_NUMS_ARR.index(left)
+        if not right.isdigit():
+            right = STR_NUMS_ARR.index(right)
+        coordinates = str(left) + str(right)
+        print(item + " || "+ coordinates)
+        result += int(coordinates)
+    return result
+
+Because the regex I wrote "consumes" letters during the search patterns such as the one below:
+six7sixqrdfive3twonehsk 
+Resulted in 62 instead of 61.
+
+Since the regex goes left to right, when it found "two" it consumes the "o"
+and does not register "one" as the right most value.
+
+I have thought of two solutions. One is we refine our regex with 
+lookahead/lookbehind.
+The other, and the one I will employ is to simply reverse the line of text and
+the regex pattern. 
+in essence we will have 
+
+    patt = r'(one|two|three|four|five|six|seven|eight|nine|zero|[0-9])'
+    r_patt = r'(eno|owt|eerht|ruof|evif|xis|neves|thgie|enin|orez|[0-9])'
+And we  will also create a reversed nums array to assign values to words.
+
+My Solution:
+
+import re
+
+
+TEST_FILE_P1 = "example_data.txt"
+TEST_FILE_P2 = "example_data_p2.txt"
+FILE_NAME = "day_1_input.txt"
+STR_NUMS_ARR = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
+                'eight', 'nine']
+STR_NUMS_ARR_REV = ['orez', 'eno', 'owt', 'eerht', 'ruof', 'evif', 'xis', 'neves',
+                    'thgie', 'enin']
+
+
+def day_1_part1(filename: str) -> int:
+    result = 0
+    try:
+        file = open(filename, "r")
+    except IOError:
+        print("No such file found!")
+    lines = file.readlines()
+    for item in lines:
+        left, right = "", ""
+        for ch in item:
+            if ch.isdigit():
+                left = ch
+                break
+        for ch in reversed(item):
+            if ch.isdigit():
+                right = ch
+                break
+        coordinates = left + right
+        result += int(coordinates)
+    return result
+
+
+def day_1_part2(filename: str) -> int:
+    result = 0
+
+    try:
+        file = open(filename, "r")
+    except IOError:
+        print("No such file found!")
+    patt = r"(zero|one|two|three|four|five|six|seven|eight|nine|[0-9])"
+    r_patt = r"(eno|owt|eerht|ruof|evif|xis|neves|thgie|enin|orez|[0-9])"
+    lines = file.readlines()
+
+    for item in lines:
+        left, right = "", ""
+        left = re.findall(pattern=patt, string=item)[0]
+        right = re.findall(pattern=r_patt, string=item[::-1])[0]
+        if not left.isdigit():
+            left = STR_NUMS_ARR.index(left)
+        if not right.isdigit():
+            right = STR_NUMS_ARR_REV.index(right)
+        coordinates = str(left) + str(right)
+        print(item + " || "+ coordinates)
+        result += int(coordinates)
+    return result
+
+
+print(day_1_part2(FILE_NAME))
