@@ -170,3 +170,11 @@ In the above example, the lowest location number can be obtained from seed numbe
 
 Consider all of the initial seed numbers listed in the ranges on the first line 
 of the almanac. What is the lowest location number that corresponds to any of the initial seed numbers?
+
+
+Initial Thoughts:
+So I tried to reapply my part 1 to part 2, and it just took too much time.
+
+I figured there was an idea I missed. I needed to know how to use map, reduce,
+zip and a few other things in Python. I will have to come back and explain part 2
+to myself to learn all the concepts.
