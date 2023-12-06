@@ -20,3 +20,5 @@ def lookup(inputs, mapping):
 print(*[min(reduce(lookup, mappings, s))[0] for s in [
     zip(seeds, [1] * len(seeds)),
     zip(seeds[0::2], seeds[1::2])]])
+
+#Source u/errop_ from reddit. !@!!!!!@@!!@!@!!@
