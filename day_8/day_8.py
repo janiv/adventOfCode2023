@@ -1,4 +1,5 @@
 from typing import List
+import numpy as np
 
 
 def day_8_part1(filename: str) -> int:
@@ -45,6 +46,7 @@ def check_all_z(nodes: List[str]) -> bool:
     return True
 
 
+
 def day_8_part2(filename: str) -> int:
     file = open(filename, 'r')
     data = file.read()
@@ -55,7 +57,7 @@ def day_8_part2(filename: str) -> int:
     nodes = data[1].strip()
 
     nodes = nodes.split('\n')
-    start = []
+    starts = []
     for line in nodes:
         full_line = line.split(' = ')
         dict_key = full_line[0]
@@ -66,31 +68,28 @@ def day_8_part2(filename: str) -> int:
         left_right = left_right.split(', ')
         nodes_map[dict_key] = left_right
         if (dict_key[2] == 'A'):
-            start.append(dict_key)
+            starts.append(dict_key)
 
-    curr = start
-    steps = 0
-    instr = instructions
-
-    while (not check_all_z(curr)):
-        if (steps % 100 == 0):
-            print(steps, curr)
-        dir = instr[0]
-        instr = instr[1:]
-        if (len(instr) == 0):
-            instr = instructions
-        temp = []
-        if dir == 'L':
-            for c in curr:
-                c = nodes_map[c][0]
-                temp.append(c)
-        else:
-            for c in curr:
-                c = nodes_map[c][1]
-                temp.append(c)
-        steps += 1
-        curr = temp
-    return steps
-
+    steps = []
+    for start in starts:
+        step = 0
+        curr = start
+        instr = instructions
+        while (curr[2] != 'Z'):
+            dir = instr[0]
+            instr = instr[1:]
+            if (len(instr) == 0):
+                instr = instructions
+            if dir == 'L':
+                curr = nodes_map[curr][0]
+            else:
+                curr = nodes_map[curr][1] 
+            step += 1
+        steps.append(step)
+    print(steps)
+    left = np.lcm.reduce(steps[0:3])
+    right = np.lcm.reduce(steps[3::])
+    print(left, right)
+    return np.lcm(np.int64(left), np.int64(right))
 
 print(day_8_part2("day_8_input.txt"))
