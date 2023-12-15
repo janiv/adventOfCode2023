@@ -64,18 +64,20 @@ def day_10_part1(filename: str) -> int:
     clean_data = []
     for line in data:
         line = line.strip()
-        temp = []
-        for char in line:
-            temp.append(char)
-        clean_data.append(temp)
+        clean_data.append(line)
+    max_row = len(clean_data)
+    max_col = len(clean_data[0])
+    arr = np.empty(shape=(max_row, max_col), dtype=str)
+    for row in range(0, max_row):
+        for col in range(0, max_col):
+            arr[row][col] = clean_data[row][col]
 
-    clean_data = np.array(clean_data)
-    init_pos = find_start(clean_data)
-    arr_shape = (len(clean_data), len(clean_data[0]))
-    d_mat = np.full(shape=arr_shape, fill_value=-1, dtype=int)
+    print(arr)
+    init_pos = find_start(arr)
+    d_mat = np.full(shape=(max_row, max_col), fill_value=-1, dtype=int)
     print(init_pos[0][0], init_pos[1][0])
     s_pos = (init_pos[0][0], init_pos[1][0])
-    x = dfs(clean_data, d_mat, s_pos, s_pos, 0, set())
+    x = dfs(arr, d_mat, s_pos, s_pos, 0, set())
     print(x)
 
 
