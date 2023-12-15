@@ -25,7 +25,8 @@ def dfs(matrix: List[List[str]], dist_matrix: List[List[int]],
     row = curr_pos[0]
     col = curr_pos[1]
     cur_pos = (row, col)
-    if row < 0 or row > (len(matrix) - 1):
+    print("Curr pos: ", curr_pos)
+    if row < 0 or (row > (len(matrix) - 1)):
         return
     if col < 0 or col > (len(matrix[0]) - 1):
         return
@@ -34,24 +35,28 @@ def dfs(matrix: List[List[str]], dist_matrix: List[List[int]],
     if matrix[row][col] == ".":
         return
     dist_matrix[row][col] = steps
-    visited.add(tuple(curr_pos))
+    visited.add(cur_pos)
     steps += 1
+    print(dist_matrix)
 
     if matrix[row][col] == 'S':
-        dfs(matrix, dist_matrix, [[row+1], [col]], curr_pos, steps, visited)
-        dfs(matrix, dist_matrix, [[row-1], [col]], curr_pos, steps, visited)
-        dfs(matrix, dist_matrix, [[row], [col-1]], curr_pos, steps, visited)
-        dfs(matrix, dist_matrix, [[row], [col+1]], curr_pos, steps, visited)
+        dfs(matrix, dist_matrix, (row, col+1), curr_pos, steps, visited)
+        dfs(matrix, dist_matrix, (row+1, col), curr_pos, steps, visited)
+        dfs(matrix, dist_matrix, (row-1, col), curr_pos, steps, visited)
+        dfs(matrix, dist_matrix, (row, col-1), curr_pos, steps, visited)
     else:
-        dir = np.array(curr_pos) - np.array(prev_pos)
+        dir = np.array(prev_pos) - np.array(curr_pos)
         pipes_dir = pipes_dict[matrix[row][col]]
-        if dir not in pipes_dir:
-            return
+        pipes_dir = np.array(pipes_dir)
+        print(matrix[row][col])
+        print("Dir: ", dir)
+        print("Pipes dir: ", pipes_dir)
         p = [0, 0]
         for pair in pipes_dir:
-            if dir != pipes_dir:
-                p = dir
-
+            if not np.array_equal(dir, pair):
+                p = pair
+        if np.array_equal(p, np.array([0, 0])):
+            return
         new_pos = np.array(curr_pos) + np.array(p)
         dfs(matrix, dist_matrix, new_pos, curr_pos, steps, visited)
 
@@ -79,6 +84,7 @@ def day_10_part1(filename: str) -> int:
     s_pos = (init_pos[0][0], init_pos[1][0])
     x = dfs(arr, d_mat, s_pos, s_pos, 0, set())
     print(x)
+    print(d_mat.argmax()/2)
 
 
-day_10_part1('day_10_test.txt')
+day_10_part1('day_10_input.txt')
