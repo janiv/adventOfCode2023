@@ -2,15 +2,16 @@ from typing import List
 import numpy as np
     
 #Direction We are going into
-LEFT = {'L', '-', 'F', 'S'}
-RIGHT=  {'7', '-', 'J', 'S'}
-UP = {'|', 'F', '7', 'S'}
-DOWN = {'|', 'L', 'J', 'S'}
+LEFT = {'L', '-', 'F'}
+RIGHT=  {'7', '-', 'J'}
+UP = {'|', 'F', '7'}
+DOWN = {'|', 'L', 'J'}
+START = {'S'}
 
 def find_start(arr: List[str]) -> List[int]:
     return np.argwhere(arr == "S")
 
-def dfs(matrix: List[List[str]], row: int, col: int, steps: int, visited=set(), acceptable=set()):
+def dfs(matrix: List[List[str]], row: int, col: int, steps: int, visited=set(), acceptable=set(), prev_dir=set()):
     pos = (row,col)
     if pos in visited and matrix[row][col] == 'S':
         print(steps)
@@ -26,18 +27,18 @@ def dfs(matrix: List[List[str]], row: int, col: int, steps: int, visited=set(), 
     
     visited.add(pos)
     if matrix[row][col] == 'S':
-        dfs(matrix, row + 1, col, steps + 1, visited, RIGHT)
-        dfs(matrix, row -1, col, steps + 1, visited, LEFT)
-        dfs(matrix, row, col + 1, steps + 1, visited, DOWN)
-        dfs(matrix, row, col - 1, steps + 1, visited, UP)
+        dfs(matrix, row + 1, col, steps + 1, visited, RIGHT, START)
+        dfs(matrix, row -1, col, steps + 1, visited, LEFT, START)
+        dfs(matrix, row, col + 1, steps + 1, visited, DOWN, START)
+        dfs(matrix, row, col - 1, steps + 1, visited, UP, START)
     if matrix[row][col] == "|":
-        dfs(matrix, row + 1, col, steps + 1, visited, DOWN)
-        dfs(matrix, row - 1, col, steps + 1,  visited, UP)
+        dfs(matrix, row + 1, col, steps + 1, visited, DOWN, UP)
+        dfs(matrix, row - 1, col, steps + 1,  visited, UP, DOWN)
     if matrix[row][col] == "-":
-        dfs(matrix, row, col + 1, steps+ 1, visited, RIGHT)
-        dfs(matrix, row, col - 1, steps + 1, visited, LEFT)
+        dfs(matrix, row, col + 1, steps+ 1, visited, RIGHT, LEFT)
+        dfs(matrix, row, col - 1, steps + 1, visited, LEFT, RIGHT)
     if matrix[row][col] == "F":
-        dfs(matrix, row, col + 1, steps+ 1, visited, RIGHT)
+        dfs(matrix, row, col + 1, steps+ 1, visited, RIGHT, DOWN)
         dfs(matrix, row + 1, col, steps+ 1, visited, DOWN)
     if matrix[row][col] == "L":
         dfs(matrix, row, col + 1, steps+ 1, visited, RIGHT)

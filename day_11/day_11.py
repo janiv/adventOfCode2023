@@ -67,8 +67,14 @@ def day_11_part1(filename: str) -> int:
     return sum
 
 
-def count(alist: List, first: int) -> int:
-    return len(list(x for x in alist if x < first))
+def count(alist: List, first: int, second: int) -> int:
+    if first >= second:
+        larger = first
+        smaller = second
+    else:
+        larger = second
+        smaller = first
+    return len(list(x for x in alist if smaller < x < larger))
 
 
 def day_11_part2(filename: str, larger) -> int:
@@ -103,16 +109,16 @@ def day_11_part2(filename: str, larger) -> int:
             galaxy_j_row = galaxy_indexes[j][0]
             galaxy_j_col = galaxy_indexes[j][1]
             
-            galaxy_i_row = galaxy_i_row + count(empty_rows, galaxy_i_row) * larger
-            galaxy_i_col = galaxy_i_col + count(empty_cols, galaxy_i_col) * larger
-            galaxy_j_row = galaxy_j_row + count(empty_rows, galaxy_j_row) * larger
-            galaxy_j_col = galaxy_j_col + count(empty_cols, galaxy_j_col) * larger
-
             row_diff = galaxy_i_row - galaxy_j_row
             col_diff = galaxy_i_col - galaxy_j_col
-            dist = abs(row_diff) + abs(col_diff)
+            extra_rows = count(empty_rows, galaxy_i_row, galaxy_j_row)
+            extra_cols = count(empty_cols, galaxy_i_col, galaxy_j_col)
+
+            dist = abs(row_diff) + abs(col_diff) + extra_rows * larger + extra_cols * larger
             sum += dist
 
     return sum
 
-print(day_11_part2('day_11_test.txt', 10))
+# The way I wrote the code means that if we do 100x larger, we pass 99
+# So if we do 1,000,000 larger we pass 999999
+print(day_11_part2('day_11_input.txt', 999999))
