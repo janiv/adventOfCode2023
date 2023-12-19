@@ -1,6 +1,7 @@
 from functools import cache
 
-
+# Code taken from reddit, see explanation for full citation. 
+# I need to practice Dynamic Programming
 @cache
 def recurse(lava, springs, result=0):
     if not springs:
