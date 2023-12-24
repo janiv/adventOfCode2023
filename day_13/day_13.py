@@ -58,7 +58,6 @@ def day_13_part1(filename: str) -> int:
             for j in range(0, len(lines[0])):
                 a[i][j] = lines[i][j]
         print(a)
-        print(horizontal_line(a))
         print(vertical_line(a))
 
 
